@@ -1,12 +1,12 @@
 package scratch.core
 
-import scratch.{LWJGLKeyboard, common}
 import scratch.helpers.MemDouble
 import org.lwjgl.opengl.Display
 import org.lwjgl.input.Keyboard
 import org.lwjgl.opengl.GL11._
 import scratch.helpers.MemDouble
 import scratch.vector.{vec2, vec}
+import scratch.common
 
 trait ScratchApp extends App {
 

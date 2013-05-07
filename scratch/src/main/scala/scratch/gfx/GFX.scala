@@ -1,16 +1,12 @@
-package scratch
+package scratch.gfx
 
-import math._
-
-import vector.{vec, vec2, vec3}
+import scratch.gl
+import scratch.vector.{vec2, vec, vec3}
+import scala.math._
 import org.lwjgl.opengl.GL11._
 
+trait GFX extends gl.GL {
 
-object gfx extends gfx {
-
-}
-
-trait gfx extends gl {
   def line(a:vec3, b:vec3) = {
 
   }
@@ -70,13 +66,6 @@ trait gfx extends gl {
     glEnd()
   }
 
-  def line(pair:(vec2, vec2)) {
-    glBegin(GL_LINES)
-    vertex(pair._1)
-    vertex(pair._2)
-    glEnd()
-  }
-
   def line(v1:vec2, v2:vec2) {
     glBegin(GL_LINES)
     vertex(v1)
@@ -85,20 +74,16 @@ trait gfx extends gl {
   }
 
   def vector(origin:vec2, to:vec2) {
-    line(origin, origin+to)
-  }
-
-  def vector(pair:(vec2,vec2)) {
-    line((pair._1, pair._1 + pair._2))
+    line(origin, origin + to)
   }
 
   def rect(w:R, h:R) {
     val pos = -vec(w/2, h/2)
     gl.begin(GL_POLYGON) {
-      gl.vertex(pos)
-      gl.vertex(pos + vec(0, h))
-      gl.vertex(pos + vec(w, h))
-      gl.vertex(pos + vec(w, 0))
+      scratch.gl.vertex(pos)
+      scratch.gl.vertex(pos + vec(0, h))
+      scratch.gl.vertex(pos + vec(w, h))
+      scratch.gl.vertex(pos + vec(w, 0))
     }
   }
 

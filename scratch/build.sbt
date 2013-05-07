@@ -20,12 +20,10 @@ libraryDependencies ++= Seq(
 //  "net.java.jinput" % "jinput" % "2.0.5",
 //  "net.java.jinput" % "jinput-platform" % "2.0.5" classifier "natives-osx" classifier "natives-windows" classifier "natives-linux"
 //  "com.googlecode.soundlibs" % "jorbis" % "0.0.17-1"
-//  "slick" % "slick" % "248"
 )
 
 resolvers ++= Seq(
-  "Slick" at "http://slick.cokeandcode.com/mavenrepo",
-	"Codehaus Snapshots" at "http://nexus.codehaus.org/snapshots/",
-	"OSS Sonatype" at "http://oss.sonatype.org/content/repositories/github-releases",
-	"Scala Tools 2" at "http://scala-tools.org/repo-releases"
+    "Codehaus Snapshots" at "http://nexus.codehaus.org/snapshots/",
+    "OSS Sonatype" at "http://oss.sonatype.org/content/repositories/github-releases",
+    "Scala Tools 2" at "http://scala-tools.org/repo-releases"
 )

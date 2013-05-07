@@ -1,13 +1,10 @@
-package scratch
+package scratch.gl
 
-import vector.{vec, vec2, vec3}
-import org.lwjgl.opengl.GL11
-import GL11._
+import org.lwjgl.opengl.GL11._
+import scratch.Color
+import scratch.vector.{vec3, vec2}
 
-object gl extends gl {
-
-}
-trait gl {
+trait GL {
 
   def matrix(fn: => Any) {
     glPushMatrix()
@@ -26,7 +23,7 @@ trait gl {
 
   def enable(what: Int)(fn: => Any) {
     def cancel() {
-      glEnd()
+      glDisable(what)
     }
     glEnable(what)
     fn
@@ -76,4 +73,3 @@ trait gl {
   @inline def vertex(x: Double, y: Double, z: Double) = glVertex3d(x, y, z)
 
 }
-
