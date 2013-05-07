@@ -2,6 +2,7 @@ package scratch
 
 import math._
 import org.lwjgl.Sys
+import java.io.File
 
 package object common {
 
@@ -9,6 +10,14 @@ package object common {
   type Radian = Double
 
   def clamp(amt:Float)(lo:Float, hi:Float) = max(lo, min(hi, amt))
+
+  def getURL(path:String) = ClassLoader.getSystemResource(path)
+  def getFile(path:String) = {
+    val url = getURL(path)
+    new File(url.toURI)
+  }
+  def getBufferedSource(path:String) = io.Source.fromInputStream(getStream(path))
+  def getStream(path:String) = ClassLoader.getSystemResourceAsStream(path)
 
   object Op {
     def apply(fn: =>Any) = new Op(()=>{fn})
@@ -46,6 +55,18 @@ package object common {
     if(! __onetimer.contains(op)) {
       op()
       __onetimer += op
+    }
+  }
+
+  /**
+   * Get an Array of all files within this directory and all subdirectories
+   */
+  def recurseDirectory(dir:File):Array[File] = {
+    if (! dir.isDirectory) {
+      Array()
+    } else {
+      val these = dir.listFiles()
+      these ++ these.filter(_.isDirectory).flatMap(recurseDirectory)
     }
   }
 }

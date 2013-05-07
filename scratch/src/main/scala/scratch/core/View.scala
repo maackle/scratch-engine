@@ -15,9 +15,10 @@ trait Camera {
 }
 
 
-class View2D(val bounds:Rect)(implicit val app: ScratchApp) extends View { self =>
+class View2D(windowBounds: =>Rect)(implicit app: ScratchApp) extends View { self =>
 
-  def this(app: ScratchApp) = this(app.windowRect)(app)
+  lazy val bounds = windowBounds
+  def this()(implicit app: ScratchApp) = this(app.windowRect)(app)
 
   class Camera2D extends Camera {
     var position: vec2 = vec2.zero//self.bounds.center

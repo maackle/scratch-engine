@@ -7,6 +7,7 @@ import org.lwjgl.opengl.GL11._
 import scratch.helpers.MemDouble
 import scratch.vector.{vec2, vec}
 import scratch.common
+import grizzled.slf4j.Logger
 
 trait ScratchApp extends App {
 
@@ -74,6 +75,7 @@ trait ScratchApp extends App {
     import common.milliseconds
 
     scratch.GLDisplay.create(windowTitle, initialWindowSize)
+    scratch.GLView.default2D()
 
     initialize()
 
@@ -87,6 +89,11 @@ trait ScratchApp extends App {
       _ms = loopStartTime
       Display.update()
       Display.sync(fps)
+    }
+
+    if(Resource.watchThread.isAlive) {
+      Resource.watchThread.interrupt()
+      Logger("ScratchApp").debug("ended watch service")
     }
 
     cleanup()

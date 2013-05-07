@@ -10,7 +10,7 @@ import java.awt
 import scratch.core.{Tex, Java, Resource}
 import scratch.{Color, gl}
 import scratch.vector.{vec2, vec}
-import java.io.FileInputStream
+import java.io.{File, FileInputStream}
 
 
 class Font(path:String, size:Int, style:Font.Style.Plain.type) {
@@ -54,23 +54,12 @@ class Font(path:String, size:Int, style:Font.Style.Plain.type) {
 }
 
 object Font extends Logging {
-  //  def load(path:String, size:Int) = {
-  //    val font =
-  //      try {
-  //        java.awt.Font.createFont(Font.TRUETYPE_FONT, getStream(path) )
-  //      }
-  //      catch {
-  //        case e:java.lang.RuntimeException => new Font(path, Font.PLAIN, size)
-  //      }
-  //    info("loaded font: " + font)
-  //    font
-  //  }
 
   import Resource._
 
   lazy val default = Resource("font/UbuntuMono-R.ttf")(Font.load(_, 20)).is
 
-  def load(fis:FileInputStream, size:Float, style:Style.Value=Style.Plain) = {
+  def load(fis:File, size:Float, style:Style.Value=Style.Plain) = {
     val base = awt.Font.createFont(awt.Font.TRUETYPE_FONT, fis)
     val font = base.deriveFont(style.id, size)
     info("loaded font: " + font)

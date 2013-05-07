@@ -6,8 +6,9 @@ version := "0.1.0-SNAPSHOT"
 scalaVersion in ThisBuild := "2.10.0"
 
 libraryDependencies ++= Seq(
-  "org.slf4j" % "slf4j-simple" % "1.6.6",
-  "org.clapper" % "grizzled-slf4j_2.9.2" % "0.6.9",
+//  "org.slf4j" % "slf4j-simple" % "1.6.6",
+  "org.clapper" % "grizzled-slf4j_2.10" % "1.0.1",
+//  "ch.qos.logback" % "logback-classic" % "1.0.12",
 //  "org.scalatest" %% "scalatest" % "2.0.M4" % "test",
 //  "org.jbox2d" % "jbox2d" % "2.1.2.2",
 //  "org.jbox2d" % "jbox2d-library" % "2.1.2.2",

@@ -19,6 +19,7 @@ trait StateBase extends Update with Render with EnterExit with EventSink {
 
 abstract class ScratchState(val app:ScratchApp) extends StateBase {
 
+  protected implicit val _app = app
 
 }
 
