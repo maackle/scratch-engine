@@ -1,9 +1,9 @@
-package scalene.gfx
+package scratch.gfx
 
 import scratch.common._
-import scalene.gfx.SpriteAnimation.FrameOptions
 import scratch.core.{Update, Render}
 import scratch.vector.{vec, vec2}
+import scratch.gfx.SpriteAnimation.FrameOptions
 
 
 trait Animation extends Render with Update {

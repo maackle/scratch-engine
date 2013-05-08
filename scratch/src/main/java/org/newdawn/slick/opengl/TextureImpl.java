@@ -92,6 +92,10 @@ public class TextureImpl implements Texture {
     public void setCacheName(String cacheName) {
     	this.cacheName = cacheName;
     }
+
+    public String getCacheName() {
+        return cacheName;
+    }
     
     /**
 	 * @see org.newdawn.slick.opengl.Texture#hasAlpha()

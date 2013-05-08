@@ -1,7 +1,8 @@
-package scalene.gfx
+package scratch.gfx
 
 import java.io.{FileInputStream, File}
 import scratch.core.{Resource, Tex, Render}
+import scratch.helpers.FileLocation
 
 
 trait ImageLike extends SubTexture with Render{
@@ -10,9 +11,9 @@ trait ImageLike extends SubTexture with Render{
   def height:Int
 }
 
-case class Image(val tex:Tex, cliprect:ClipRect) extends ImageLike {
+case class Image(val tex:Tex, cliprect:Option[ClipRect]) extends ImageLike {
 
-  lazy val clip = if(cliprect==null) ClipRect(0,0,texWidth,texHeight) else cliprect
+  lazy val clip = cliprect.getOrElse(ClipRect(0,0,texWidth,texHeight))
   val (width, height) = (clip.w, clip.h)
   def render() { blit() }
   override def toString = "Image(tex=%s, clip=%s)".format(tex, clip)
@@ -20,9 +21,11 @@ case class Image(val tex:Tex, cliprect:ClipRect) extends ImageLike {
 
 object Image {
 
-  def apply(file:File, clip:ClipRect = null) = {
-    new Image(Tex.load(file), clip)
-  }
+	def load(loc:FileLocation, clip:ClipRect) = {
+		new Image(Tex.load(loc), Some(clip))
+	}
+
+	def load(loc:FileLocation) = new Image(Tex.load(loc), None)
 
 }
 

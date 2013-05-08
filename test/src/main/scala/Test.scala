@@ -1,6 +1,5 @@
 package test
 
-import scalene.gfx.{Image, Sprite}
 import scratch.core._
 import scratch._
 import scratch.vector.{vec2, vec}
@@ -13,12 +12,15 @@ import scratch.gfx
 import scala.Some
 import scratch.gl
 import grizzled.slf4j.{Logger, Logging}
+import scratch.gfx.Image
 
-object Test extends ScratchApp {
+object Test extends ScratchApp { self =>
+
+  val loader = new ResourceLoader(new File("/home/michael/code/scratch-engine/test/src/main/resources"))
 
   def initialize =  {
-    Resource.autoload()
-    Resource.developmentMode("/home/michael/code/scratch-engine/test/src/main/resources")
+    loader.autoload()
+    loader.watch()
   }
 
   def cleanup = ()
@@ -28,55 +30,83 @@ object Test extends ScratchApp {
 
   val startState = new TestState
 
+  abstract class State extends StateBase {
+    implicit val app = self
+    val loader = self.loader
+  }
 
   run()
 }
 
-class TestState extends ScratchState(Test) with LWJGLKeyboard with Logging {
+class Image4(image:Resource[Image]) extends ResourceDependency with Logging {
 
-  def onEnter = info("enter")
-  def onExit  = info("exit")
+	val resourceDependencies:Set[ResourceLike] = Set(image)
 
-//  lazy val image = Image(common.getFile("img/snail3.png"))
-  val image = Resource("img/snail3.png")(Image.apply(_, null))
+	def w = image.is.width
+	def h = image.is.height
 
-//  val view = new View2D( Rect(100, 100, 200, 200) )
-  val view = new View2D
+	def refresh(reso:ResourceLike) {
+		info("refreshed %s due to %s" format (this, reso))
+	}
 
-  def update(dt:Float) {
+	def render() {
+		image.option.map({ im =>
+			gl.matrix {
+				for (t <- Seq(vec(0,0), vec(w, 0), vec(0, h), vec(-w, 0))) {
+					gl.translate(t)
+					im.render()
+				}
+			}
+		})
+	}
+}
 
-  }
+class TestState extends Test.State with LWJGLKeyboard with Logging {
 
-  def render() {
-    debug("rendering")
-    val (w, h) = view.bounds.dimensions
-    def circles() = {
-      gl.clear(Color(0x222222))
-      gl.fill(false)
-      Color.red.bind()
-      for(i <- -w to w by 10) {
-        if(i > 0) Color.blue.bind()
-        gfx.circle(4, vec(i, 0))
-      }
-    }
-    view.apply {
-      circles()
-      image.option.map( im => im.render() )
-    }
-//    view2.apply {
-//      circles()
-//    }
-  }
+	def onEnter = info("enter")
+	def onExit  = info("exit")
 
-  listen {
-    case KeyHold(Keyboard.KEY_EQUALS) => view.camera.zoom += 0.1f
-    case KeyHold(Keyboard.KEY_MINUS) => view.camera.zoom -= 0.1f
+	//  lazy val image = Image(common.getFile("img/snail3.png"))
+	val image = loader.image("img/snail.png")
 
-    case KeyHold(KEY_A) => view.camera.position.x -= 1f
-    case KeyHold(KEY_D) => view.camera.position.x += 1f
-    case KeyHold(KEY_S) => view.camera.position.y -= 1f
-    case KeyHold(KEY_W) => view.camera.position.y += 1f
-    case MouseDown(code, pos) => info(pos)
-  }
+	val image4 = new Image4(image)
+
+	//  val view = new View2D( Rect(100, 100, 200, 200) )
+	val view = new View2D
+
+	def update(dt:Float) {
+
+	}
+
+	def render() {
+		debug("rendering")
+		val (w, h) = view.bounds.dimensions
+		def circles() = {
+			gl.clear(Color(0x222222))
+			gl.fill(false)
+			Color.red.bind()
+			for(i <- -w to w by 10) {
+				if(i > 0) Color.blue.bind()
+				gfx.circle(4, vec(i, 0))
+			}
+		}
+		view.apply {
+			circles()
+			image.option.map( im => im.render() )
+			gl.translate(vec(100, 100))
+			image4.render()
+		}
+	}
+
+	listen {
+		case KeyHold(Keyboard.KEY_EQUALS) => view.camera.zoom += 0.1f
+		case KeyHold(Keyboard.KEY_MINUS) => view.camera.zoom -= 0.1f
+
+		case KeyHold(KEY_A) => view.camera.position.x -= 1f
+		case KeyHold(KEY_D) => view.camera.position.x += 1f
+		case KeyHold(KEY_S) => view.camera.position.y -= 1f
+		case KeyHold(KEY_W) => view.camera.position.y += 1f
+		case MouseDown(code, pos) => info("%s  %s" format (pos, view.toWorld(pos)))
+	}
 
 }

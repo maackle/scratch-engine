@@ -1,4 +1,4 @@
-package scalene.gfx
+package scratch.gfx
 
 import javax.imageio.ImageIO
 
@@ -48,6 +48,6 @@ class SpriteSheet(protected val baseImage:Image, val columns:Int, val rows:Int) 
     x = col * width / columns
     y = row * height / rows
   } yield {
-    baseImage.copy(cliprect = ClipRect(x,y, width/columns, height/rows))
+    baseImage.copy(cliprect = Some(ClipRect(x,y, width/columns, height/rows)))
   }
 }

@@ -1,4 +1,4 @@
-package scalene.gfx
+package scratch.gfx
 
 import scala.Array
 import org.lwjgl.opengl.GL11._

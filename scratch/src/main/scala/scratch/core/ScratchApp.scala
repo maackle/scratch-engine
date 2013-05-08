@@ -8,6 +8,11 @@ import scratch.helpers.MemDouble
 import scratch.vector.{vec2, vec}
 import scratch.common
 import grizzled.slf4j.Logger
+import org.newdawn.slick.opengl.InternalTextureLoader
+
+object ScratchApp {
+  val SlickTextureLoader = InternalTextureLoader.get()
+}
 
 trait ScratchApp extends App {
 
@@ -21,11 +26,15 @@ trait ScratchApp extends App {
   def pushState(state:StateBase) { stateMachine.push(state) }
   def popState() { stateMachine.pop() }
 
+  InternalTextureLoader.get().setHoldTextureData(false)
+
   val fps = 60
+  implicit val _app = this
   private var _tick = 0
   private val _loopTime, _executionTime = MemDouble(32)
   private val _startupTime = 0.0
   private var __timeToExit = false
+  private[scratch] var _resourceLoaders = Set[ResourceLoader]()
 
   def exit() { __timeToExit = true }
 
@@ -65,6 +74,7 @@ trait ScratchApp extends App {
 
   def loopBody() {
     val dt = 1 / fps
+    _resourceLoaders.foreach(_.update())
     currentState.__update(dt)
     currentState.__render()
     currentState.eventSources.foreach(_.update(dt))
@@ -91,10 +101,13 @@ trait ScratchApp extends App {
       Display.sync(fps)
     }
 
-    if(Resource.watchThread.isAlive) {
-      Resource.watchThread.interrupt()
-      Logger("ScratchApp").debug("ended watch service")
+    _resourceLoaders.foreach { rl =>
+      if(rl.watchThread.isAlive) {
+        rl.watchThread.interrupt()
+        Logger("ScratchApp").debug("ended watch service: %s" format rl)
+      }
     }
+
 
     cleanup()
   }

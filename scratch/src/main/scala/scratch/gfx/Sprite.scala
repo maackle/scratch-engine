@@ -1,4 +1,4 @@
-package scalene.gfx
+package scratch.gfx
 
 
 import scratch.{common, helpers, gl}
@@ -8,6 +8,7 @@ import scratch.core.Render
 import scratch.core.components.Position2D
 import common._
 import java.io.File
+import scratch.helpers.FileLocation
 
 trait SpriteLike
 extends Position2D
@@ -45,7 +46,7 @@ class Sprite(
               )
 extends SpriteLike {
 
-  def this(file:File, position:vec2) = this(Image(file), position)
+  def this(loc:FileLocation, position:vec2) = this(Image.load(loc), position)
 
   lazy protected val imageOffset =
     if(imageCenter==null) vec(image.width/2, image.height/2) else imageCenter

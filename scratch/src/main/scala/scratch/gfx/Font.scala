@@ -8,7 +8,7 @@ import org.lwjgl.opengl.GL11._
 import grizzled.slf4j.Logging
 import java.awt
 import scratch.core.{Tex, Java, Resource}
-import scratch.{Color, gl}
+import scratch.{common, Color, gl}
 import scratch.vector.{vec2, vec}
 import java.io.{File, FileInputStream}
 
@@ -57,7 +57,8 @@ object Font extends Logging {
 
   import Resource._
 
-  lazy val default = Resource("font/UbuntuMono-R.ttf")(Font.load(_, 20)).is
+//  lazy val default = Resource("font/UbuntuMono-R.ttf")(Font.load(_, 20)).is
+  lazy val default = (Font.load(common.getFile("font/UbuntuMono-R.ttf"), 20))
 
   def load(fis:File, size:Float, style:Style.Value=Style.Plain) = {
     val base = awt.Font.createFont(awt.Font.TRUETYPE_FONT, fis)

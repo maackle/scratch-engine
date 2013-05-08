@@ -6,9 +6,11 @@ import org.lwjgl.opengl.GL11._
 import java.io.{FileInputStream, File}
 import org.lwjgl.opengl.GL13
 import scratch.gl
+import scratch.helpers.FileLocation
 
 
-class Tex(t:Texture) {
+class Tex(protected[scratch] val slickTexture:TextureImpl) {
+  private val t = slickTexture
   val (getImageWidth, getImageHeight) = (t.getImageWidth, t.getImageHeight)
   val (getTextureWidth, getTextureHeight) = (t.getTextureWidth, t.getTextureHeight)
   val id = t.getTextureID
@@ -22,10 +24,10 @@ class Tex(t:Texture) {
 
 //TODO: don't rely on singleton?
 object Tex {
-  private var _lastBound:Texture = null
+  private var _lastBound:TextureImpl = null
   def bindNone() { _lastBound = null }
   def lastBound = TextureImpl.getLastBind
-  def lastBound_=(t:Texture) { TextureImpl.bindByForce(t) }
+  def lastBound_=(t:TextureImpl) { TextureImpl.bindByForce(t) }
 
 //  def load(path:String) = {
 //    val reg = """.*\.(.+?)$""".r
@@ -38,13 +40,14 @@ object Tex {
 //  }
 
   //TODO: test!
-  def load(file:File) = {
+  def load(loc:FileLocation) = {
+    val file = loc.file
     assert(file.isFile)
     val reg = """.*\.(.+?)$""".r
     val path = file.getPath
     val reg(ext) = path
     val texture = ext match {
-      case "png" | "gif" | "jpg" | "jpeg" => { TextureLoader.getTexture(ext, new FileInputStream(file)) }
+      case "png" | "gif" | "jpg" | "jpeg" => { TextureLoader.getTexture(ext, loc.stream).asInstanceOf[TextureImpl] }
       case _ => throw new Exception("image format '%s' is not recognized".format(ext))
     }
     new Tex(texture)
