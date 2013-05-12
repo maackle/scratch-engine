@@ -1,20 +1,23 @@
 package test
 
-import skitch.core._
 import skitch._
 import skitch.vector.{vec2, vec}
 import org.lwjgl.input.Keyboard
 import scala.Some
 import java.io.{FileInputStream, File}
-import skitch.core.MouseDown
-import skitch.core.KeyHold
 import skitch.gfx
 import scala.Some
 import skitch.gl
 import grizzled.slf4j.{Logger, Logging}
 import skitch.gfx.Image
+import skitch.core._
+import scala.Some
+import skitch.core.MouseDown
+import scala.Some
+import skitch.core.KeyHold
+import skitch.core.components.Position2D
 
-object Test extends SkitchApp { self =>
+object Test extends SkitchApp with Logging { self =>
 
   val loader = new ResourceLoader(new File("/home/michael/code/skitch-dev/test/src/main/resources"))
 
@@ -28,19 +31,22 @@ object Test extends SkitchApp { self =>
   val windowTitle = "Test test"
   val initialWindowSize = Some(600, 600)
 
-  val startState = new TestState
+  val startState = new ManagedTestState
 
-  abstract class State extends StateBase {
-    implicit val app = self
+  abstract class State extends SkitchState(this) {
     val loader = self.loader
   }
 
   run()
 }
 
-class Image4(image:Resource[Image]) extends ResourceDependency with Logging {
+class Image4(image:Resource[Image]) extends ResourceDependent with Logging with Position2D {
 
-	val resourceDependencies:Set[ResourceLike] = Set(image)
+	val resourceDependencies = Set(image)
+
+	val position = vec(200, 200)
+	val scale = vec2.one
+	val rotation = 0.0
 
 	def w = image.is.width
 	def h = image.is.height
@@ -52,6 +58,7 @@ class Image4(image:Resource[Image]) extends ResourceDependency with Logging {
 	def render() {
 		image.option.map({ im =>
 			gl.matrix {
+				gl.translate(position)
 				for (t <- Seq(vec(0,0), vec(w, 0), vec(0, h), vec(-w, 0))) {
 					gl.translate(t)
 					im.render()
@@ -61,7 +68,7 @@ class Image4(image:Resource[Image]) extends ResourceDependency with Logging {
 	}
 }
 
-class TestState extends Test.State with LWJGLKeyboard with Logging {
+class ManagedTestState extends Test.State with LWJGLKeyboard with Logging {
 
 	def onEnter = info("enter")
 	def onExit  = info("exit")
@@ -71,15 +78,13 @@ class TestState extends Test.State with LWJGLKeyboard with Logging {
 
 	val image4 = new Image4(image)
 
-	//  val view = new View2D( Rect(100, 100, 200, 200) )
-	val view = new View2D
+	val view = View2D(app)
 
 	def update(dt:Float) {
 
 	}
 
 	def render() {
-		debug("rendering")
 		val (w, h) = view.bounds.dimensions
 		def circles() = {
 			gl.clear(Color(0x222222))
@@ -93,7 +98,6 @@ class TestState extends Test.State with LWJGLKeyboard with Logging {
 		view.apply {
 			circles()
 			image.option.map( im => im.render() )
-			gl.translate(vec(100, 100))
 			image4.render()
 		}
 	}
@@ -106,6 +110,13 @@ class TestState extends Test.State with LWJGLKeyboard with Logging {
 		case KeyHold(KEY_D) => view.camera.position.x += 1f
 		case KeyHold(KEY_S) => view.camera.position.y -= 1f
 		case KeyHold(KEY_W) => view.camera.position.y += 1f
+
+		case KeyHold(KEY_LEFT) =>   image4.position.x -= 1f
+		case KeyHold(KEY_RIGHT) =>  image4.position.x += 1f
+		case KeyHold(KEY_DOWN) =>     image4.position.y -= 1f
+		case KeyHold(KEY_UP) =>   image4.position.y += 1f
+
+
 		case MouseDown(code, pos) => info("%s  %s" format (pos, view.toWorld(pos)))
 	}
 
