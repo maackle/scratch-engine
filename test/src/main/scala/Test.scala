@@ -16,7 +16,7 @@ import skitch.gfx.Image
 
 object Test extends SkitchApp { self =>
 
-  val loader = new ResourceLoader(new File("/home/michael/code/skitch-engine/test/src/main/resources"))
+  val loader = new ResourceLoader(new File("/home/michael/code/skitch-dev/test/src/main/resources"))
 
   def initialize =  {
     loader.autoload()
