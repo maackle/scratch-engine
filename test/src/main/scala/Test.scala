@@ -1,22 +1,22 @@
 package test
 
-import scratch.core._
-import scratch._
-import scratch.vector.{vec2, vec}
+import skitch.core._
+import skitch._
+import skitch.vector.{vec2, vec}
 import org.lwjgl.input.Keyboard
 import scala.Some
 import java.io.{FileInputStream, File}
-import scratch.core.MouseDown
-import scratch.core.KeyHold
-import scratch.gfx
+import skitch.core.MouseDown
+import skitch.core.KeyHold
+import skitch.gfx
 import scala.Some
-import scratch.gl
+import skitch.gl
 import grizzled.slf4j.{Logger, Logging}
-import scratch.gfx.Image
+import skitch.gfx.Image
 
-object Test extends ScratchApp { self =>
+object Test extends SkitchApp { self =>
 
-  val loader = new ResourceLoader(new File("/home/michael/code/scratch-engine/test/src/main/resources"))
+  val loader = new ResourceLoader(new File("/home/michael/code/skitch-engine/test/src/main/resources"))
 
   def initialize =  {
     loader.autoload()

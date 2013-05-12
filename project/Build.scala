@@ -3,7 +3,7 @@ import Keys._
 
 object ApplicationBuild extends Build {
 
-  val appName         = "scratch-dev"
+  val appName         = "skitch-dev"
   val appVersion      = "0.1a"
 
   val appDependencies = Seq(
@@ -16,13 +16,13 @@ object ApplicationBuild extends Build {
     println("oh hello!!!")
   }
 
-  val scratch = Project("scratch", file("scratch"), settings = Project.defaultSettings ++ Seq(
+  val skitch = Project("skitch", file("skitch"), settings = Project.defaultSettings ++ Seq(
     //    scalaSource in (Compile) <<= baseDirectory / "src"
   ))
 
   val test = Project("test", file("test"), settings = Project.defaultSettings ++ Seq(
     //    scalaSource in (Compile) <<= baseDirectory / "src"
-  )) dependsOn(scratch) aggregate(scratch)
+  )) dependsOn(skitch) aggregate(skitch)
 
 
 }
